@@ -2,56 +2,82 @@
 {% block content %}
 
 <style>
-/* 🌈 Elegant card and form styling */
-.quiz-card {
-  background: linear-gradient(135deg, #ffffff, #f8faff);
-  border-radius: 18px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-  padding: 40px;
-  transition: all 0.3s ease-in-out;
-}
-.quiz-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+/* 🌈 Modern, responsive design */
+.quiz-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+  align-items: flex-start;
 }
 
-h2.quiz-title {
+.quiz-form-section,
+.quiz-list-section {
+  flex: 1;
+  min-width: 360px;
+  background: linear-gradient(145deg, #ffffff, #f4f7fb);
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  padding: 30px 35px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.quiz-form-section:hover,
+.quiz-list-section:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.quiz-form-section h2,
+.quiz-list-section h2 {
   font-weight: 800;
   color: #003366;
   text-shadow: 1px 1px 0 #fff;
-  letter-spacing: 1px;
+  border-bottom: 2px solid #003366;
+  padding-bottom: 8px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
+.quiz-form-section h2::before {
+  content: "📝";
+}
+.quiz-list-section h2::before {
+  content: "📋";
+}
+
+/* Inputs and Buttons */
 .form-control, select, input, textarea {
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   border: 1px solid #ccc;
   padding: 10px;
-  transition: border 0.2s ease;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
 }
 .form-control:focus {
-  border-color: #003366;
-  box-shadow: 0 0 6px rgba(0,51,102,0.3);
+  border-color: #0059b3;
+  box-shadow: 0 0 6px rgba(0,91,204,0.3);
 }
 
 .btn-create {
   background: linear-gradient(135deg, #007bff, #003366);
   border: none;
-  color: #fff;
+  color: white;
   border-radius: 12px;
   font-weight: 600;
   padding: 12px 40px;
-  letter-spacing: 0.5px;
   transition: all 0.3s ease;
 }
 .btn-create:hover {
-  background: linear-gradient(135deg, #0059b3, #001f4d);
+  background: linear-gradient(135deg, #0059b3, #002b66);
   transform: scale(1.05);
 }
 
-/* 🌟 Table styling */
+/* Table Styling */
 .table-custom {
   border-radius: 10px;
   overflow: hidden;
+  font-size: 0.95rem;
 }
 .table-custom thead {
   background: linear-gradient(135deg, #003366, #0059b3);
@@ -63,149 +89,144 @@ h2.quiz-title {
 .table-custom tbody tr:hover {
   background: #f1f6ff;
 }
+.table-custom td, .table-custom th {
+  vertical-align: middle;
+}
+
 .badge {
   padding: 8px 12px;
   border-radius: 8px;
   font-size: 0.9rem;
 }
-.btn-outline-primary:hover {
-  background: linear-gradient(135deg, #007bff, #003366);
-  color: #fff;
-}
 
-.btn-outline-danger:hover {
-  background: linear-gradient(135deg, #dc3545, #b02a37);
-  color: #fff;
-}
-
-.btn-warning:hover {
-  background: linear-gradient(135deg, #ffc107, #ff9800);
-  color: #fff;
-}
-
-/* ✅ Success message styling */
+/* Alerts */
 .alert-success {
   background: linear-gradient(135deg, #28a745, #34d058);
   color: white;
-  border: none;
   border-radius: 10px;
   font-weight: 600;
   box-shadow: 0 5px 15px rgba(40,167,69,0.3);
 }
+
+/* Responsive tweaks */
+@media (max-width: 992px) {
+  .quiz-container {
+    flex-direction: column;
+  }
+  .quiz-form-section, .quiz-list-section {
+    width: 100%;
+  }
+}
 </style>
 
-<div class="container mt-5 mb-5">
-  <div class="quiz-card">
-    <h2 class="text-center quiz-title mb-4">📘 Staff Quiz Management</h2>
+<div class="container mb-5">
+  <div class="quiz-container">
+    <!-- 🌿 Quiz Creation Form -->
+    <div class="quiz-form-section">
+      <h2>Create New Quiz</h2>
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="fw-semibold">{{ form.category.label }}</label>
+            {{ form.category }}
+          </div>
+          <div class="col-md-6">
+            <label class="fw-semibold">{{ form.quiz_title.label }}</label>
+            {{ form.quiz_title }}
+          </div>
+          <div class="col-md-4">
+            <label class="fw-semibold">{{ form.start_time.label }}</label>
+            {{ form.start_time }}
+          </div>
+          <div class="col-md-4">
+            <label class="fw-semibold">{{ form.end_time.label }}</label>
+            {{ form.end_time }}
+          </div>
+          <div class="col-md-4">
+            <label class="fw-semibold">{{ form.duration.label }}</label>
+            {{ form.duration }}
+          </div>
+          <div class="col-md-12">
+            <label class="fw-semibold">{{ form.upload_file.label }}</label>
+            {{ form.upload_file }}
+          </div>
+        </div>
+        <div class="text-center mt-5">
+          <button type="submit" class="btn btn-create btn-lg shadow">
+            <i class="bi bi-plus-circle me-2"></i>Create Quiz
+          </button>
+        </div>
+      </form>
 
-    <!-- 🌿 Quiz creation form -->
-    <form method="POST" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="row g-4">
-        <div class="col-md-6">
-          <label class="fw-semibold">{{ form.category.label }}</label>
-          {{ form.category }}
+      {% if messages %}
+        <div class="mt-4">
+          {% for message in messages %}
+            <div class="alert alert-success text-center">{{ message }}</div>
+          {% endfor %}
         </div>
-        <div class="col-md-6">
-          <label class="fw-semibold">{{ form.quiz_title.label }}</label>
-          {{ form.quiz_title }}
-        </div>
-        <div class="col-md-4">
-          <label class="fw-semibold">{{ form.start_time.label }}</label>
-          {{ form.start_time }}
-        </div>
-        <div class="col-md-4">
-          <label class="fw-semibold">{{ form.end_time.label }}</label>
-          {{ form.end_time }}
-        </div>
-        <div class="col-md-4">
-          <label class="fw-semibold">{{ form.duration.label }}</label>
-          {{ form.duration }}
-        </div>
-        <div class="col-md-12">
-          <label class="fw-semibold">{{ form.upload_file.label }}</label>
-          {{ form.upload_file }}
-        </div>
-      </div>
+      {% endif %}
+    </div>
 
-      <div class="text-center mt-5">
-        <button type="submit" class="btn btn-create btn-lg shadow">
-          <i class="bi bi-plus-circle me-2"></i>Create Quiz
-        </button>
-      </div>
-    </form>
-
-    <!-- ✅ Success messages -->
-    {% if messages %}
-      <div class="mt-4">
-        {% for message in messages %}
-          <div class="alert alert-success text-center">{{ message }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <!-- 📋 Existing quizzes -->
-    <div class="mt-5">
-    <h4 class="fw-bold text-secondary mb-3">📋 Your Created Quizzes</h4>
-    <div class="table-responsive">
+    <!-- 📋 Quiz List -->
+    <div class="quiz-list-section">
+      <h2>Your Quizzes</h2>
+      <div class="table-responsive">
         <table class="table table-hover table-custom align-middle">
-        <thead>
+          <thead>
             <tr>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Duration (min)</th>
-            <th>Status</th>
-            <th class="text-center">Actions</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Start</th>
+              <th>End</th>
+              <th>Duration</th>
+              <th>Status</th>
+              <th class="text-center">Actions</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
             {% for quiz in quizzes %}
             <tr>
-                <td class="fw-semibold">{{ quiz.quiz_title }}</td>
-                <td>{{ quiz.category.name }}</td>
-                <td>{{ quiz.start_time|date:"Y-m-d H:i" }}</td>
-                <td>{{ quiz.end_time|date:"Y-m-d H:i" }}</td>
-                <td>{{ quiz.duration }}</td>
-                <td>
+              <td class="fw-semibold">{{ quiz.quiz_title }}</td>
+              <td>{{ quiz.category.name }}</td>
+              <td>{{ quiz.start_time|date:"Y-m-d H:i" }}</td>
+              <td>{{ quiz.end_time|date:"Y-m-d H:i" }}</td>
+              <td>{{ quiz.duration }} min</td>
+              <td>
                 {% if quiz.active %}
-                    <span class="badge bg-success shadow-sm">Active</span>
+                  <span class="badge bg-success shadow-sm">Active</span>
                 {% else %}
-                    <span class="badge bg-danger shadow-sm">Inactive</span>
+                  <span class="badge bg-danger shadow-sm">Inactive</span>
                 {% endif %}
-                </td>
-                <td class="text-center">
-                <!-- 🌟 Action Buttons -->
+              </td>
+              <td class="text-center">
                 <a href="{% url 'edit_quiz' quiz.id %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1">
-                    <i class="bi bi-pencil-square"></i> Edit
+                  <i class="bi bi-pencil-square"></i>
                 </a>
-
                 {% if quiz.active %}
-                    <a href="{% url 'deactivate_quiz' quiz.id %}" class="btn btn-sm btn-warning rounded-pill px-3 me-1">
-                    <i class="bi bi-pause-circle"></i> Deactivate
-                    </a>
+                  <a href="{% url 'deactivate_quiz' quiz.id %}" class="btn btn-sm btn-warning rounded-pill px-3 me-1">
+                    <i class="bi bi-pause-circle"></i>
+                  </a>
                 {% else %}
-                    <a href="{% url 'activate_quiz' quiz.id %}" class="btn btn-sm btn-success rounded-pill px-3 me-1">
-                    <i class="bi bi-play-circle"></i> Activate
-                    </a>
+                  <a href="{% url 'activate_quiz' quiz.id %}" class="btn btn-sm btn-success rounded-pill px-3 me-1">
+                    <i class="bi bi-play-circle"></i>
+                  </a>
                 {% endif %}
-
                 <a href="{% url 'delete_quiz' quiz.id %}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
-                    <i class="bi bi-trash"></i> Delete
+                  <i class="bi bi-trash"></i>
                 </a>
-                </td>
+              </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" class="text-center text-muted py-4">
-                🌙 No quizzes created yet. Create your first quiz above!
-                </td>
+              <td colspan="7" class="text-center text-muted py-4">
+                🌙 No quizzes created yet. Start by creating one!
+              </td>
             </tr>
             {% endfor %}
-        </tbody>
+          </tbody>
         </table>
-    </div>
+      </div>
     </div>
   </div>
 </div>
