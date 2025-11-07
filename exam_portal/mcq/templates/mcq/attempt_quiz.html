@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5 mb-5" style="max-width: 850px;">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+            
+            <!-- Quiz Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary mb-0">{{ quiz.title }}</h2>
+                <div id="timer" class="badge bg-danger fs-6 px-3 py-2 shadow-sm">Loading...</div>
+            </div>
+            <hr>
+
+            <!-- Quiz Form -->
+            <form id="quiz-form" method="post" class="mt-4">
+                {% csrf_token %}
+
+                {% for q in questions %}
+                <div class="question-block mb-5 p-4 border rounded-4 shadow-sm bg-light">
+                    <div class="fw-bold fs-5 mb-3 text-dark">
+                        Q{{ forloop.counter }}. {{ q.question }}
+                    </div>
+
+                    <div class="mcq-options">
+                        <label class="mcq-option">
+                            <input type="radio" name="{{ q.id }}" value="A">
+                            <span class="option-text">A. {{ q.option_a }}</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="{{ q.id }}" value="B">
+                            <span class="option-text">B. {{ q.option_b }}</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="{{ q.id }}" value="C">
+                            <span class="option-text">C. {{ q.option_c }}</span>
+                        </label>
+                        <label class="mcq-option">
+                            <input type="radio" name="{{ q.id }}" value="D">
+                            <span class="option-text">D. {{ q.option_d }}</span>
+                        </label>
+                    </div>
+                </div>
+                {% empty %}
+                    <p class="text-center text-muted fs-5">No questions available for this quiz.</p>
+                {% endfor %}
+
+                <!-- Submit Button -->
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-lg btn-success px-5 py-2 shadow-sm">
+                        ✅ Submit Quiz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styling -->
+<style>
+    .question-block {
+        background: #f9fbfd;
+        transition: 0.3s ease;
+    }
+    .question-block:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .mcq-option {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background-color: white;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+    }
+
+    .mcq-option:hover {
+        background-color: #eef5ff;
+        border-color: #007bff;
+    }
+
+    .mcq-option input[type="radio"] {
+        accent-color: #007bff;
+        margin-right: 10px;
+        transform: scale(1.2);
+    }
+
+    .option-text {
+        font-size: 1rem;
+        color: #333;
+    }
+
+    #timer {
+        font-weight: bold;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+</style>
+
+<!-- Countdown Timer -->
+<script>
+    const endTime = new Date("{{ end_time|date:'Y-m-d H:i:s' }}").getTime();
+
+    const timerInterval = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = endTime - now;
+
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        const timerEl = document.getElementById("timer");
+        if (distance > 0) {
+            timerEl.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        } else {
+            clearInterval(timerInterval);
+            timerEl.innerText = "Time's up!";
+            document.getElementById("quiz-form").submit();
+        }
+    }, 1000);
+</script>
+
+{% endblock %}

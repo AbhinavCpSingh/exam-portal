@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}All Students{% endblock %}
+{% block content %}
+
+<style>
+    table {
+        width: 90%;
+        margin: 40px auto;
+        border-collapse: separate;
+        border-spacing: 0 12px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+    }
+
+    th {
+        background-color: #003366;
+        color: white;
+        padding: 14px;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    td {
+        background: white;
+        padding: 12px 15px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        border-radius: 8px;
+    }
+
+    tr:hover td {
+        background-color: #f2f6ff;
+    }
+
+    .btn-view {
+        background-color: #003366;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+        transition: 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-view:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+    }
+
+    h2 {
+        text-align: center;
+        color: #003366;
+        font-size: 28px;
+        margin-bottom: 25px;
+    }
+</style>
+
+<h2>📊 All Students Results</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Student Name</th>
+            <th>Student Username</th>
+            <th>Student Email</th>
+            <th>Total Attempts</th>
+            <th>Correct Answers</th>
+            <th>Wrong Answers</th>          
+            <th>View Detailed Results</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in student_data %}
+        <tr>
+            <td><b>{{ forloop.counter }}</b></td>
+            <td>{{ data.student.first_name }} {{ data.student.last_name }}</td>
+            <td>{{ data.student.username }}</td>
+            <td>{{ data.student.email }}</td>
+            <td>{{ data.total_attempts }}</td>
+            <td style="color:green;">{{ data.correct_answers }}</td>
+            <td style="color:red;">{{ data.wrong_answers }}</td>         
+            <td>
+                <a href="{% url 'admin_view_results' data.student.id %}" class="btn-view">
+                    📘 View Results
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No students found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

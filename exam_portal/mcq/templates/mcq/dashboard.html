@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h2 style="color: #003366;">Welcome, {{ request.user.username }} 👋</h2>
+    <p style="font-size: 18px; color: #333;">You can now take your quiz or check your past results below.</p>
+
+    <div style="
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-top: 40px;
+    ">
+        <div style="
+            background-color: #e6f0ff;
+            border: 1px solid #cce0ff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        ">
+            <h3 style="color: #003366;">📝 Attempt Quiz</h3>
+            <p>Start answering questions from your subject.</p>
+            <a href="{% url 'start_quiz' quiz.id %}" style="
+                display: inline-block;
+                background-color: #004080;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: bold;
+            ">Start Quiz</a>
+        </div>
+
+        <div style="
+            background-color: #e6ffe6;
+            border: 1px solid #b3ffb3;
+            border-radius: 10px;
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        ">
+            <h3 style="color: #006600;">📊 View Results</h3>
+            <p>Check your performance and correct answers.</p>
+            <a href="/quiz_result/" style="
+                display: inline-block;
+                background-color: #009900;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: bold;
+            ">View Results</a>
+        </div>
+    </div>
+
+    {% if request.user.is_staff %}
+    <div style="margin-top: 50px; text-align: center;">
+        <h3 style="color: #800000;">Admin Options</h3>
+        <a href="/upload/" style="
+            display: inline-block;
+            background-color: #800000;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px;
+        ">Upload MCQs</a>
+        <a href="/view_results/" style="
+            display: inline-block;
+            background-color: #993300;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px;
+        ">View All Results</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

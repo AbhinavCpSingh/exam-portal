@@ -1,0 +1,26 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <h1>📊 Student Performance Dashboard</h1>
+  <table border="1" cellpadding="8">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Total Attempts</th>
+        <th>Correct Answers</th>
+        <th>Wrong Answers</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in student_stats %}
+        <tr>
+          <td>{{ s.student__username }}</td>
+          <td>{{ s.total_attempts }}</td>
+          <td>{{ s.correct_answers }}</td>
+          <td>{{ s.wrong_answers }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">No student data available yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

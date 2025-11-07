@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Student Results - Admin View{% endblock %}
+
+{% block content %}
+<div style="max-width:950px; margin:auto; padding:40px;">
+
+    <h1 style="text-align:center; color:#003366;">📊 {{ student.username }}'s Quiz Results</h1>
+    <hr>
+
+    {% if quiz_results %}
+        <table style="width:100%; border-collapse:collapse; margin-top:30px;">
+            <thead>
+                <tr style="background-color:#003366; color:white; text-align:center;">
+                    <th style="padding:12px;">Quiz Title</th>
+                    <th style="padding:12px;">Category</th>
+                    <th style="padding:12px;">Total</th>
+                    <th style="padding:12px;">Correct</th>
+                    <th style="padding:12px;">Wrong</th>
+                    <th style="padding:12px;">Score (%)</th>
+                    <th style="padding:12px;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for result in quiz_results %}
+                    <tr style="text-align:center; background-color:{% cycle '#f9f9f9' 'white' %}; border-bottom:1px solid #ccc;">
+                        <td style="padding:12px;">{{ result.quiz.quiz_title }}</td>
+                        <td style="padding:12px;">{{ result.quiz.category.name }}</td>
+                        <td style="padding:12px;">{{ result.total_questions }}</td>
+                        <td style="color:green; padding:12px;">{{ result.correct_answers }}</td>
+                        <td style="color:red; padding:12px;">{{ result.wrong_answers }}</td>
+                        <td style="font-weight:bold; padding:12px;">{{ result.score }}</td>
+                        <td style="padding:12px;">
+                            <a href="{% url 'download_quiz_pdf' result.quiz.id %}" 
+                               style="background:#28a745; color:white; padding:6px 12px;
+                                      border-radius:5px; text-decoration:none; font-weight:bold;">
+                                ⬇️ Download
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <div style="text-align:center; padding:40px; color:#777;">
+            <h3>📭 No quiz results found for {{ student.username }}.</h3>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

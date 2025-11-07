@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}My Quiz Results{% endblock %}
+
+{% block content %}
+<div style="max-width:950px; margin:auto; padding:40px;">
+
+    <h1 style="text-align:center; color:#003366;">📊 Student Quiz Results</h1>
+    <hr>
+
+    {% if quiz_results %}
+        <table style="
+            width:100%; 
+            border-collapse:collapse; 
+            margin-top:30px;
+            border-radius:8px;
+            overflow:hidden;
+        ">
+            <thead>
+                <tr style="background-color:#003366; color:white; text-align:center;">
+                    <th style="padding:12px;">Quiz Title</th>
+                    <th style="padding:12px;">Category</th>
+                    <th style="padding:12px;">Total</th>
+                    <th style="padding:12px;">Correct</th>
+                    <th style="padding:12px;">Wrong</th>
+                    <th style="padding:12px;">Score (%)</th>
+                    <th style="padding:12px;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for result in quiz_results %}
+                    <tr style="
+                        text-align:center; 
+                        background-color:{% cycle '#f8faff' 'white' %};
+                        border-bottom:1px solid #e0e0e0;
+                    ">
+                        <td style="padding:14px;">{{ result.quiz.quiz_title }}</td>
+                        <td style="padding:14px;">{{ result.quiz.category.name }}</td>
+                        <td style="padding:14px;">{{ result.total_questions }}</td>
+                        <td style="color:green; padding:14px;">{{ result.correct_answers }}</td>
+                        <td style="color:red; padding:14px;">{{ result.wrong_answers }}</td>
+                        <td style="font-weight:bold; padding:14px;">{{ result.score }}</td>
+                        <td style="padding:14px;">
+                            <a href="{% url 'attempt_quiz' result.quiz.id %}" 
+                               style="
+                                   display:inline-block;
+                                   background:#007bff;
+                                   color:white;
+                                   padding:8px 16px;
+                                   border-radius:6px;
+                                   font-weight:bold;
+                                   text-decoration:none;
+                                   transition:0.3s ease;
+                               "
+                               onmouseover="this.style.background='#0056b3';"
+                               onmouseout="this.style.background='#007bff';">
+                               🔁 Retake
+                            </a>
+                            <!-- 🆕 View Details Button -->
+                            <a href="{% url 'quiz_detail_result' result.quiz.id %}" 
+                            style="
+                                display:inline-block;
+                                background:#28a745;
+                                color:white;
+                                padding:8px 14px;
+                                border-radius:6px;
+                                font-weight:bold;
+                                text-decoration:none;
+                                transition:0.3s ease;
+                            "
+                            onmouseover="this.style.background='#1e7e34';"
+                            onmouseout="this.style.background='#28a745';">
+                            🔍 View Detailed Result
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <div style="text-align:center; padding:40px; color:#777;">
+            <h3>📭 No quiz results found for you.</h3>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

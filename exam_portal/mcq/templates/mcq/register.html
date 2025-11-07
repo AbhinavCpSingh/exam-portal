@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock %}
+{% block content %}
+
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 40px 30px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .auth-container h2 {
+        color: #003366;
+        margin-bottom: 25px;
+        font-size: 26px;
+    }
+    .auth-container form {
+        text-align: left;
+        position: relative;
+    }
+    .auth-container label {
+        display: block;
+        font-weight: bold;
+        margin-top: 15px;
+        color: #003366;
+    }
+    .auth-container input[type="text"],
+    .auth-container input[type="email"],
+    .auth-container input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 5px;
+        border: 1px solid #ccd0d5;
+        border-radius: 6px;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .auth-container input:focus {
+        border-color: #004080;
+        box-shadow: 0 0 4px rgba(0, 64, 128, 0.3);
+        outline: none;
+    }
+    .password-container {
+        position: relative;
+    }
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #004080;
+        font-size: 18px;
+    }
+    .auth-container button {
+        width: 100%;
+        background-color: #003366;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 15px;
+        margin-top: 25px;
+        transition: background-color 0.3s ease;
+    }
+    .auth-container button:hover {
+        background-color: #0055a5;
+    }
+    .auth-container button:disabled {
+        background-color: #9bb3d1;
+        cursor: not-allowed;
+    }
+    .auth-container p {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+    }
+    .auth-container a {
+        color: #004080;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .auth-container a:hover {
+        text-decoration: underline;
+    }
+    .message, .error {
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        text-align: left;
+        font-size: 14px;
+    }
+    .message {
+        background-color: #e6f4ea;
+        border-left: 5px solid #28a745;
+        color: #155724;
+    }
+    .error {
+        background-color: #fdecea;
+        border-left: 5px solid #d93025;
+        color: #b02a37;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="auth-container">
+    <h2>Create Your Account</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}error{% else %}message{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" id="registerForm">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <label for="id_first_name">First Name:</label>
+        {{ form.first_name }}
+
+        <label for="id_last_name">Last Name:</label>
+        {{ form.last_name }}
+
+        <label for="id_username">Username:</label>
+        {{ form.username }}
+
+        <label for="id_email">Email:</label>
+        {{ form.email }}
+
+        <label for="id_password1">Password:</label>
+        <div class="password-container">
+            {{ form.password1 }}
+            <i class="fa-solid fa-eye toggle-password" id="togglePassword1"></i>
+        </div>
+        <p id="passwordStrength" class="password-strength"></p>
+
+        <label for="id_password2">Confirm Password:</label>
+        <div class="password-container">
+            {{ form.password2 }}
+            <i class="fa-solid fa-eye toggle-password" id="togglePassword2"></i>
+        </div>
+        <p id="passwordMatchMessage" class="password-match-message"></p>
+
+        <button type="submit" id="registerBtn" disabled>Register</button>
+    </form>
+
+    <p>Already have an account? <a href="/login/">Login here</a></p>
+</div>
+
+<script>
+    const password1 = document.querySelector('#id_password1');
+    const password2 = document.querySelector('#id_password2');
+    const matchMessage = document.getElementById('passwordMatchMessage');
+    const strengthMessage = document.getElementById('passwordStrength');
+    const registerBtn = document.getElementById('registerBtn');
+
+    // Toggle password visibility
+    function togglePassword(toggleId, inputField) {
+        const toggle = document.querySelector(toggleId);
+        toggle.addEventListener('click', function () {
+            const type = inputField.getAttribute('type') === 'password' ? 'text' : 'password';
+            inputField.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+    togglePassword('#togglePassword1', password1);
+    togglePassword('#togglePassword2', password2);
+
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+        if (password.length === 0) {
+            strengthMessage.textContent = '';
+            return;
+        }
+
+        if (strength <= 2) {
+            strengthMessage.innerHTML = 'Strength: <span style="color:red;">Weak</span>';
+        } else if (strength === 3 || strength === 4) {
+            strengthMessage.innerHTML = 'Strength: <span style="color:orange;">Medium</span>';
+        } else {
+            strengthMessage.innerHTML = 'Strength: <span style="color:green;">Strong</span>';
+        }
+    }
+
+    // Password match validation
+    function checkPasswords() {
+        if (password1.value === "" || password2.value === "") {
+            matchMessage.textContent = "";
+            registerBtn.disabled = true;
+            return;
+        }
+
+        if (password1.value === password2.value) {
+            matchMessage.textContent = "✅ Passwords match!";
+            matchMessage.style.color = "green";
+            registerBtn.disabled = false;
+        } else {
+            matchMessage.textContent = "❌ Passwords do not match!";
+            matchMessage.style.color = "red";
+            registerBtn.disabled = true;
+        }
+    }
+
+    password1.addEventListener('keyup', function() {
+        checkPasswordStrength(password1.value);
+        checkPasswords();
+    });
+
+    password2.addEventListener('keyup', checkPasswords);
+</script>
+
+{% endblock %}

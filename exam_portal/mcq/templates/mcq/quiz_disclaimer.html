@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5" style="max-width: 650px;">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body text-center p-5">
+            
+            <h2 class="mb-3 text-primary">{{ quiz.title }}</h2>
+            <hr class="mb-4">
+
+            <p class="lead text-muted mb-4">
+                You are about to begin the quiz. Please read the instructions carefully before starting.
+            </p>
+
+            <div class="alert alert-warning text-start" style="font-size: 15px;">
+                <ul class="mb-0">
+                    <li>⏱ Duration: <strong>{{ quiz.duration }} minutes</strong></li>
+                    <li>🚫 Once started, the quiz must be completed in one sitting.</li>
+                    <li>💾 Your answers will be <strong>auto-submitted</strong> when time expires.</li>
+                    <li>📵 Do not refresh or close the window during the quiz.</li>
+                </ul>
+            </div>
+
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-lg btn-success px-5 py-2 shadow-sm">
+                    ✅ I Understand, Start Quiz
+                </button>
+            </form>
+
+            <div class="mt-4">
+                <a href="{% url 'student_dashboard' %}" 
+                   class="btn btn-outline-secondary px-4 py-2">
+                   ← Go Back
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

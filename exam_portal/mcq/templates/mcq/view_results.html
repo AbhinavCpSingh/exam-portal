@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Results for {{ student.username }}{% endblock %}
+{% block content %}
+<style>
+    table {
+        width: 90%;
+        margin: 30px auto;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #003366;
+        color: white;
+        text-align: left;
+    }
+    tr:hover {
+        background-color: #f9f9f9;
+    }
+    h2 {
+        text-align: center;
+        color: #003366;
+    }
+    .back-link {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+        color: #004080;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<h2>Results for {{ student.get_full_name|default:student.username }}</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Question</th>
+        <th>Your Answer</th>
+        <th>Correct Answer</th>
+        <th>Status</th>
+    </tr>
+    {% for answer in results %}
+    <tr>
+        <td>{{ answer.question.question }}</td>
+        <td>{{ answer.selected_option }}</td>
+        <td>{{ answer.question.correct_option }}</td>
+        <td>
+            {% if answer.is_correct %}
+                ✅ Correct
+            {% else %}
+                ❌ Wrong
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p><a href="{% url 'all_students' %}">← Back to all students</a></p>
+{% endblock %}

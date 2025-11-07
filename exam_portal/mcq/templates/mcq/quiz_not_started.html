@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align:center; margin-top:100px;">
+    <h2>{{ quiz.title }}</h2>
+    <p>The quiz has not started yet.</p>
+    <p>Start Time: {{ quiz.start_time|date:"M d, Y H:i" }}</p>
+    <p>End Time: {{ quiz.end_time|date:"M d, Y H:i" }}</p>
+    <a href="{% url 'student_dashboard' %}" 
+       style="padding:10px 20px; background:#007bff; color:white; border-radius:6px; text-decoration:none;">
+       Go Back
+    </a>
+</div>
+{% endblock %}

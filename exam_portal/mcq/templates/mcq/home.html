@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align:center; margin-top:100px;">
+    <h1>🏠 Welcome to the Exam Portal</h1>
+    <p>Select an action below:</p>
+
+    <a href="{% url 'attempt_quiz' 1 %}" style="margin:10px; padding:10px 20px; background-color:#28a745; color:white; text-decoration:none; border-radius:6px;">Attempt Quiz</a>
+
+    <a href="{% url 'quiz_result' 1 %}" style="margin:10px; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:6px;">View Result</a>
+
+    {% if request.user.is_staff %}
+        <a href="{% url 'upload_mcq' %}" style="margin:10px; padding:10px 20px; background-color:#6c757d; color:white; text-decoration:none; border-radius:6px;">Upload MCQs</a>
+    {% endif %}
+</div>
+{% endblock %}

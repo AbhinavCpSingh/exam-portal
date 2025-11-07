@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>⚙️ Admin Dashboard</h2>
+<p>Welcome, {{ request.user.username }}!</p>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:30px;">
+    <a href="{% url 'upload_mcq' %}" style="background:#007bff; color:white; padding:20px; border-radius:10px; text-align:center; text-decoration:none;">Upload MCQs</a>
+    <a href="{% url 'all_students' %}" style="background:#28a745; color:white; padding:20px; border-radius:10px; text-align:center; text-decoration:none;">View All Results</a>
+    <a href="" style="background:#ffc107; color:black; padding:20px; border-radius:10px; text-align:center; text-decoration:none;">Attempt Quiz</a>
+    <a href="/admin/" style="background:#6c757d; color:white; padding:20px; border-radius:10px; text-align:center; text-decoration:none;">Open Django Admin</a>
+</div>
+{% endblock %}

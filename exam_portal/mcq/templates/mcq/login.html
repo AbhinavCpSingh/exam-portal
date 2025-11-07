@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 40px 30px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .auth-container h2 {
+        color: #003366;
+        margin-bottom: 25px;
+        font-size: 26px;
+    }
+    .auth-container form {
+        text-align: left;
+        position: relative;
+    }
+    .auth-container label {
+        display: block;
+        font-weight: bold;
+        margin-top: 15px;
+        color: #003366;
+    }
+    .auth-container input[type="text"],
+    .auth-container input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 5px;
+        border: 1px solid #ccd0d5;
+        border-radius: 6px;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .auth-container input[type="text"]:focus,
+    .auth-container input[type="password"]:focus {
+        border-color: #004080;
+        box-shadow: 0 0 4px rgba(0, 64, 128, 0.3);
+        outline: none;
+    }
+
+    /* Password field with eye icon */
+    .password-container {
+        position: relative;
+    }
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #004080;
+        font-size: 18px;
+    }
+
+    .auth-container button {
+        width: 100%;
+        background-color: #003366;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 15px;
+        margin-top: 20px;
+        transition: background-color 0.3s ease;
+    }
+    .auth-container button:hover {
+        background-color: #0055a5;
+    }
+    .auth-container p {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+    }
+    .auth-container a {
+        color: #004080;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .auth-container a:hover {
+        text-decoration: underline;
+    }
+    .message, .error {
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        text-align: left;
+        font-size: 14px;
+    }
+    .message {
+        background-color: #e6f4ea;
+        border-left: 5px solid #28a745;
+        color: #155724;
+    }
+    .error {
+        background-color: #fdecea;
+        border-left: 5px solid #d93025;
+        color: #b02a37;
+    }
+</style>
+
+<!-- Font Awesome for Eye Icon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="auth-container">
+    <h2>Login to Exam Portal</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}error{% else %}message{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label for="id_username">Username:</label>
+        {{ form.username }}
+
+        <label for="id_password">Password:</label>
+        <div class="password-container">
+            {{ form.password }}
+            <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+    
+    <p>Don’t have an account? <a href="/register/">Register here</a></p>
+</div>
+
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const passwordField = document.querySelector('#id_password');
+
+    togglePassword.addEventListener('click', function () {
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+
+        // Toggle the eye / eye-slash icon
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
+
+{% endblock %}

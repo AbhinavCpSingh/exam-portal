@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:950px; margin:auto; padding:40px;">
+
+    <h1 style="text-align:center; color:#003366;">📊 Student Quiz Results</h1>
+    <hr>
+
+    {% if quiz_results %}
+        <table style="width:100%; border-collapse:collapse; margin-top:30px;">
+            <thead>
+                <tr style="background-color:#003366; color:white; text-align:center;">
+                    <th>Quiz Title</th>
+                    <th>Category</th>
+                    <th>Total</th>
+                    <th>Correct</th>
+                    <th>Wrong</th>
+                    <th>Score (%)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in quiz_results %}
+                    <tr style="text-align:center; background-color:{% cycle '#f9f9f9' 'white' %};">
+                        <td>{{ result.quiz.quiz_title }}</td>
+                        <td>{{ result.quiz.category.name }}</td>
+                        <td>{{ result.total_questions }}</td>
+                        <td style="color:green;">{{ result.correct_answers }}</td>
+                        <td style="color:red;">{{ result.wrong_answers }}</td>
+                        <td><strong>{{ result.score }}</strong></td>
+                        <td>
+                            <a href="{% url 'attempt_quiz' result.quiz.id %}" 
+                               style="background:#007bff; color:white; padding:6px 12px; border-radius:5px;
+                                      text-decoration:none;">🔁 Retake</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div style="text-align:center; padding:40px; color:#777;">
+            <h3>📭 No quiz results found for you.</h3>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

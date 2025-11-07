@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload MCQ Word File</title>
+</head>
+<body>
+    <h2>Upload MCQs</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if success %}
+    <p style="color:green;">Questions uploaded successfully!</p>
+    {% endif %}
+</body>
+</html>

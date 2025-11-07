@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}📊 Detailed Results for {{ student.username }}{% endblock %}
+{% block content %}
+
+<style>
+    details summary::-webkit-details-marker {
+    display: none; /* Hide default marker */
+}
+details summary::before {
+    content: "▶"; /* collapsed symbol */
+    font-size: 1rem;
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+}
+details[open] summary::before {
+    content: "▼"; /* expanded symbol */
+    transform: rotate(0deg);
+}
+</style>
+
+<div style="max-width:900px; margin:auto; padding:30px;">
+    <h2 style="text-align:center; color:#003366;">
+        📊 Detailed Results for {{ student.first_name }} {{ student.last_name }} (Username: {{ student.username }})
+    </h2>
+    <hr>
+
+    {% if no_results %}
+        <p style="text-align:center; color:#888;">No results found for this student.</p>
+    {% else %}
+        {% for result in quiz_results %}
+        <div style="background:#f9f9f9; border:1px solid #ddd; border-radius:10px; padding:20px; margin-bottom:25px;">
+
+            <h3 style="color:#003366;">🧠 {{ result.quiz.quiz_title }}</h3>
+            <p><b>Total Questions:</b> {{ result.total_questions }}</p>
+            <p><b>Correct:</b> <span style="color:green;">{{ result.correct_answers }}</span></p>
+            <p><b>Wrong:</b> <span style="color:red;">{{ result.wrong_answers }}</span></p>
+            <p><b>Percentage:</b> {{ result.score }}%</p>
+            <p>
+                <b>Status:</b>
+                {% if result.score >= 50 %}
+                    <span style="color:green; font-weight:bold;">✅ Pass</span>
+                {% else %}
+                    <span style="color:red; font-weight:bold;">❌ Fail</span>
+                {% endif %}
+            </p>
+            <details style="margin-top:20px; border:1px solid #003366; border-radius:8px; padding:10px; max-width:100%;">
+                <summary style="
+                    cursor:pointer; 
+                    font-weight:bold; 
+                    font-size:1.1em; 
+                    color:#003366;
+                    list-style:none;
+                    outline:none;
+                    user-select:none;
+                ">
+                    📋 Question Details
+                </summary>
+                <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                    <thead style="background:#003366; color:white;">
+                        <tr>
+                            <th style="padding:8px;">Question</th>
+                            <th style="padding:8px;">Your Answer</th>
+                            <th style="padding:8px;">Correct Answer</th>
+                            <th style="padding:8px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for q in result.questions %}
+                        <tr style="border-bottom:1px solid #ddd; text-align:center;">
+                            <td style="padding:8px;">{{ q.question }}</td>
+                            <td style="padding:8px;">{{ q.selected_option }}</td>
+                            <td style="padding:8px;">{{ q.correct_option }}</td>
+                            <td style="padding:8px;">
+                                {% if q.is_correct %}
+                                    <span style="color:green;">✅ Correct</span>
+                                {% else %}
+                                    <span style="color:red;">❌ Wrong</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </details>
+            <div style="text-align:right; margin-top:15px;">
+                <a href="{% url 'admin_download_quiz_pdf' student.id result.quiz.id %}" 
+                   style="background:#003366; color:white; padding:8px 14px; border-radius:6px; text-decoration:none; font-weight:bold;">
+                   📄 Download PDF
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+    <button onclick="history.back()" 
+            style="background:#003366; color:white; padding:8px 18px; border-radius:6px; border:none; font-weight:bold; cursor:pointer;">
+        ⬅️ Back
+    </button>
+</div>
+<script>
+function toggleQuestions(id) {
+    var container = document.getElementById(id);
+    var icon = document.getElementById('toggle-icon-' + id.split('-')[1]);
+    if (container.style.display === 'none') {
+        container.style.display = 'block';
+        icon.textContent = '−';  // minus sign
+    } else {
+        container.style.display = 'none';
+        icon.textContent = '+';  // plus sign
+    }
+}
+</script>
+{% endblock %}

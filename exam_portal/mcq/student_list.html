@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Student Results{% endblock %}
+{% block content %}
+<h2>All Students</h2>
+<p>Select a student to view their results:</p>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Student Name</th>
+        <th>Username</th>
+    </tr>
+    {% for student in students %}
+    <tr>
+        <td><a href="{% url 'view_results' student.id %}">{{ student.get_full_name|default:student.username }}</a></td>
+        <td>{{ student.username }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if not students %}
+<p>No student results found.</p>
+{% endif %}
+{% endblock %}
