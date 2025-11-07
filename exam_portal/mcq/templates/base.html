@@ -177,11 +177,21 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateTimer() {
         const now = new Date();
         const diffMs = now - loginDate;
-        const diffMins = Math.floor(diffMs / 60000);
-        const diffSecs = Math.floor((diffMs % 60000) / 1000);
+
+        // Calculate hours, minutes, seconds
+        const diffSecsTotal = Math.floor(diffMs / 1000);
+        const hours = Math.floor(diffSecsTotal / 3600);
+        const minutes = Math.floor((diffSecsTotal % 3600) / 60);
+        const seconds = diffSecsTotal % 60;
 
         const loginTimeStr = formatDateTime(loginDate);
-        loginInfo.textContent = `Logged in on: ${loginTimeStr} | Active: ${diffMins}m ${diffSecs}s`;
+
+        // Format hours with leading zero if less than 10
+        const hoursStr = hours < 10 ? "0" + hours : hours;
+        const minutesStr = minutes < 10 ? "0" + minutes : minutes;
+        const secondsStr = seconds < 10 ? "0" + seconds : seconds;
+
+        loginInfo.textContent = `Logged in on: ${loginTimeStr} | Active: ${hoursStr}h ${minutesStr}m ${secondsStr}s`;
     }
 
     setInterval(updateTimer, 1000);
@@ -196,5 +206,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 </script>
+
 </body>
 </html>
