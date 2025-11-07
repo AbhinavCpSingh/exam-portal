@@ -42,21 +42,21 @@
                         <td style="font-weight:bold; padding:14px;">{{ result.score }}</td>
                         <td style="padding:14px;">
                             <a href="{% url 'attempt_quiz' result.quiz.id %}" 
-                               style="
-                                   display:inline-block;
-                                   background:#007bff;
-                                   color:white;
-                                   padding:8px 16px;
-                                   border-radius:6px;
-                                   font-weight:bold;
-                                   text-decoration:none;
-                                   transition:0.3s ease;
-                               "
-                               onmouseover="this.style.background='#0056b3';"
-                               onmouseout="this.style.background='#007bff';">
-                               🔁 Retake
+                            style="
+                                display:inline-block;
+                                background:#007bff;
+                                color:white;
+                                padding:8px 16px;
+                                border-radius:6px;
+                                font-weight:bold;
+                                text-decoration:none;
+                                transition:0.3s ease;
+                                margin-right: 10px;     /* add space here */
+                            "
+                            onmouseover="this.style.background='#0056b3';"
+                            onmouseout="this.style.background='#007bff';">
+                            🔁 Retake
                             </a>
-                            <!-- 🆕 View Details Button -->
                             <a href="{% url 'quiz_detail_result' result.quiz.id %}" 
                             style="
                                 display:inline-block;
