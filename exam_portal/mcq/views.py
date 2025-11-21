@@ -31,13 +31,44 @@ from reportlab.lib.utils import ImageReader
 from django.conf import settings
 import os
 
-@login_required
 def home(request):
+    """Public landing page — redirects logged-in users appropriately."""
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('admin_home')
+        else:
+            return redirect('student_dashboard')
+    return render(request, 'public_home.html')  # 👈 Public screen for non-login users
+
+
+def login_view(request):
+    """Handles login for both students and admins."""
+    if request.user.is_authenticated:
+        return redirect('home')  # Already logged in
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user:
+            login(request, user)
+            if user.is_staff:
+                return redirect('admin_home')
+            else:
+                return redirect('student_dashboard')
+        else:
+            messages.error(request, "Invalid username or password.")
+    
+    return render(request, 'mcq/login.html')
+
+
+@login_required
+def dashboard_redirect(request):
     if request.user.is_staff:
         return redirect('admin_home')
     else:
         return redirect('student_dashboard')
-
     
 @login_required
 @user_passes_test(lambda u: u.is_staff)

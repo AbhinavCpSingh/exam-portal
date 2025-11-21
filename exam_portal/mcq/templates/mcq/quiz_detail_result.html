@@ -1,19 +1,158 @@
 {% extends "base.html" %}
 {% block title %}{{ quiz.quiz_title }} - Detailed Result{% endblock %}
 {% block content %}
+<style>
+    .stats-container {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin: 30px auto;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        background: white;
+        width: 200px;
+        padding: 22px;
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    }
+
+    .stat-value {
+        font-size: 26px;
+        font-weight: bold;
+        margin-top: 8px;
+    }
+
+    .progress-circle {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        border: 8px solid lightgray;
+        position: relative;
+        margin: auto;
+    }
+
+    .progress-inner {
+        width: 90px;
+        height: 90px;
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        border-radius: 50%;
+        border: 8px solid #007bff;
+        clip-path: circle();
+        transform: rotate(calc({{ score }} * 3.6deg));
+        transform-origin: center;
+    }
+
+    .score-text {
+        font-size: 20px;
+        font-weight: bold;
+        color: #003366;
+        margin-top: 12px;
+    }
+
+    .score-bar {
+        height: 12px;
+        background: #e6e6e6;
+        border-radius: 6px;
+        margin-top: 8px;
+        overflow: hidden;
+    }
+
+    .score-bar div {
+        height: 100%;
+        width: {{ score }}%;
+        background: linear-gradient(90deg, #007bff, #00c3ff);
+    }
+
+    .stamp-animated {
+    text-align: center;
+    font-size: 52px;
+    font-weight: 900;
+    padding: 20px 40px;
+    border: 8px solid;
+    width: fit-content;
+    margin: 40px auto;
+    border-radius: 15px;
+    transform: rotate(-12deg) scale(0);
+    animation: stampPop 0.4s ease-out forwards;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    }
+
+    @keyframes stampPop {
+        0%   { transform: rotate(-12deg) scale(0); opacity: 0; }
+        60%  { transform: rotate(-12deg) scale(1.2); opacity: 1; }
+        100% { transform: rotate(-12deg) scale(1); }
+    }
+
+    .pass-animated {
+        color: #1b5e20;
+        border-color: #1b5e20;
+        box-shadow: 0 0 15px rgba(27,94,32,0.4);
+    }
+
+    .fail-animated {
+        color: #b71c1c;
+        border-color: #b71c1c;
+        box-shadow: 0 0 15px rgba(183,28,28,0.4);
+    }
+
+</style>
+
 <div style="max-width:950px; margin:auto; padding:40px;">
     <h1 style="text-align:center; color:#003366;">📋 {{ quiz.quiz_title }} — Detailed Result</h1>
 
-    <div style="text-align:center; margin-bottom:30px;">
-        <p><strong>Total Questions: {{ total_questions }}</strong></p>
-        <p><strong>Correct: <span style="color:green;">{{ correct_answers }}</span></strong></p>
-        <p><strong>Wrong: <span style="color:red;">{{ wrong_answers }}</span></strong></p>
-        <p><strong>Percentage: <span style="color:blue;">{{ score }}%</span></strong></p>
+    <div class="stats-container">
+
+            <!-- Total Questions -->
+            <div class="stat-card">
+                <h5>Total Questions</h5>
+                <div class="stat-value">{{ total_questions }}</div>
+            </div>
+
+            <!-- Correct Answers -->
+            <div class="stat-card">
+                <h5 style="color:green;">Correct</h5>
+                <div class="stat-value" style="color:green;">{{ correct_answers }}</div>
+            </div>
+
+            <!-- Wrong Answers -->
+            <div class="stat-card">
+                <h5 style="color:red;">Wrong</h5>
+                <div class="stat-value" style="color:red;">{{ wrong_answers }}</div>
+            </div>
+
+            <!-- Score Circle -->
+            <div class="stat-card">
+                <!-- <div class="progress-circle">
+                    <div class="progress-inner"></div>
+                </div> -->
+                <h5 style="color:#003366;">Percentage</h5>
+                <div class="score-text">{{ score }}%</div>
+                <div class="score-bar"><div></div></div>
+            </div>
+
     </div>
+
+    {% if score < 33 %}
+        <div class="stamp-animated fail-animated">FAIL</div>
+    {% else %}
+        <div class="stamp-animated pass-animated">PASS</div>
+    {% endif %}
 
     <table style="width:100%; border-collapse:collapse; font-size:15px;">
         <tr style="background-color:#003366; color:white; text-align:center;">
-            <th style="padding:10px;">#</th>
+            <th style="padding:10px;">S.N.</th>
             <th style="padding:10px;">Question</th>
             <th style="padding:10px;">Your Answer</th>
             <th style="padding:10px;">Correct Answer</th>

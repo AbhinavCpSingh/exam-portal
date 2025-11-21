@@ -57,44 +57,60 @@
         font-size: 28px;
         margin-bottom: 25px;
     }
+
+    .table-responsive {
+        border-radius: 12px;
+    }
+    table {
+        min-width: 900px; /* Force scroll on small screens */
+    }
 </style>
 
 <h2>📊 All Students Results</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Student Name</th>
-            <th>Student Username</th>
-            <th>Student Email</th>
-            <th>Total Attempts</th>
-            <th>Correct Answers</th>
-            <th>Wrong Answers</th>          
-            <th>View Detailed Results</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for data in student_data %}
-        <tr>
-            <td><b>{{ forloop.counter }}</b></td>
-            <td>{{ data.student.first_name }} {{ data.student.last_name }}</td>
-            <td>{{ data.student.username }}</td>
-            <td>{{ data.student.email }}</td>
-            <td>{{ data.total_attempts }}</td>
-            <td style="color:green;">{{ data.correct_answers }}</td>
-            <td style="color:red;">{{ data.wrong_answers }}</td>         
-            <td>
-                <a href="{% url 'admin_view_results' data.student.id %}" class="btn-view">
-                    📘 View Results
-                </a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">No students found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container mt-4">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body">
+          <!-- Scrollable Table Container -->
+          <div class="table-responsive" style="overflow-x: auto;">
+            <table class="text-center align-middle">
+                <thead>
+                    <tr>
+                        <th>S.N.</th>
+                        <th>Student Name</th>
+                        <th>Student Username</th>
+                        <th>Student Email</th>
+                        <th>Total Attempts</th>
+                        <th>Correct Answers</th>
+                        <th>Wrong Answers</th>          
+                        <th>View Detailed Results</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in student_data %}
+                    <tr>
+                        <td><b>{{ forloop.counter }}</b></td>
+                        <td>{{ data.student.first_name }} {{ data.student.last_name }}</td>
+                        <td>{{ data.student.username }}</td>
+                        <td>{{ data.student.email }}</td>
+                        <td>{{ data.total_attempts }}</td>
+                        <td style="color:green;">{{ data.correct_answers }}</td>
+                        <td style="color:red;">{{ data.wrong_answers }}</td>         
+                        <td>
+                            <a href="{% url 'admin_view_results' data.student.id %}" class="btn-view">
+                                📘 View Results
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No students found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+     </div>
+   </div>
+</div>
 {% endblock %}
