@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or os.urandom(50).hex()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.226.33.60',] 
+ALLOWED_HOSTS = ['10.226.33.60','*',] 
 
 # Application definition 
 
