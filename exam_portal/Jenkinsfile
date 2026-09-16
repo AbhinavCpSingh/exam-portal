@@ -1,0 +1,61 @@
+﻿pipeline {
+
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo '======================================'
+                echo 'CHECKING OUT SOURCE CODE'
+                echo '======================================'
+            }
+        }
+
+        stage('Security Check') {
+            steps {
+
+                echo '======================================'
+                echo 'RUNNING UNIVERSAL SECURITY CHECK'
+                echo '======================================'
+
+                powershell '''
+                    $ErrorActionPreference = "Continue"
+
+                    Write-Host ""
+                    Write-Host "======================================"
+                    Write-Host " DEVSECOPS SECURITY PIPELINE"
+                    Write-Host "======================================"
+                    Write-Host ""
+
+                    .\security-check.ps1
+
+                    if ($LASTEXITCODE -ne 0) {
+                        Write-Host ""
+                        Write-Host "[FAIL] Security checks failed."
+                        exit $LASTEXITCODE
+                    }
+
+                    Write-Host ""
+                    Write-Host "[PASS] Security checks completed successfully."
+                '''
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo '======================================'
+            echo 'SECURITY PIPELINE PASSED'
+            echo '======================================'
+        }
+
+        failure {
+            echo '======================================'
+            echo 'SECURITY PIPELINE FAILED'
+            echo 'DEPLOYMENT BLOCKED'
+            echo '======================================'
+        }
+    }
+}
