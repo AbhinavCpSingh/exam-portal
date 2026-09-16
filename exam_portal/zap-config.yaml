@@ -1,0 +1,33 @@
+﻿env:
+  contexts:
+    - name: juice-shop
+      urls:
+        - http://host.docker.internal:3000
+
+jobs:
+  - type: passiveScan-config
+    parameters:
+      maxAlertsPerRule: 0
+
+  - type: spider
+    parameters:
+      context: juice-shop
+      maxDuration: 2
+
+  - type: activeScan
+    parameters:
+      context: juice-shop
+      maxScanDurationInMins: 5
+
+  - type: exitStatus
+    parameters:
+      errorLevel: High
+      warnLevel: Medium
+      okExitValue: 0
+      errorExitValue: 1
+
+  - type: report
+    parameters:
+      template: traditional-json
+      reportDir: /zap/wrk/
+      reportFile: zap-policy-report.json
