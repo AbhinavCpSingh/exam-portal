@@ -28,3 +28,9 @@ dist/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Jenkins CI Python environment
+.ci-venv/
+
+sbom.json
+zap-policy-report.json

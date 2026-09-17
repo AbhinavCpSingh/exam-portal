@@ -239,7 +239,7 @@ if ($IsPython) {
         Write-Host "[INFO] Running pip-audit..."
         Write-Host ""
 
-        pip-audit -r requirements.txt
+        .\.ci-venv\Scripts\pip-audit.exe -r requirements.txt
 
         $PipAuditExitCode = $LASTEXITCODE
 
@@ -312,7 +312,7 @@ if ($IsPython) {
         Write-Host "[INFO] Running pytest..."
         Write-Host ""
 
-        pytest
+        .\.ci-venv\Scripts\pytest.exe
 
         $PytestExitCode = $LASTEXITCODE
 
@@ -727,3 +727,4 @@ else {
     exit 0
 
 }
+

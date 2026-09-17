@@ -26,6 +26,45 @@ pipeline {
             }
         }
 
+        stage('Prepare Python CI Environment') {
+            steps {
+                dir('exam_portal') {
+                    echo '======================================'
+                    echo 'PREPARING PYTHON CI ENVIRONMENT'
+                    echo '======================================'
+
+                    powershell '''
+                        $ErrorActionPreference = "Stop"
+
+                        Write-Host "[INFO] Checking Python..."
+                        python --version
+
+                        if (-not (Test-Path ".\\\\.ci-venv\\\\Scripts\\\\python.exe")) {
+                            Write-Host "[INFO] Creating CI virtual environment..."
+                            python -m venv .ci-venv
+                        }
+                        else {
+                            Write-Host "[INFO] CI virtual environment already exists."
+                        }
+
+                        Write-Host "[INFO] Upgrading pip..."
+                        .\\\\.ci-venv\\\\Scripts\\\\python.exe -m pip install --upgrade pip
+
+                        Write-Host "[INFO] Installing CI security/test tools..."
+                        .\\\\.ci-venv\\\\Scripts\\\\python.exe -m pip install pip-audit pytest
+
+                        Write-Host "[INFO] Verifying pip-audit..."
+                        .\\\\.ci-venv\\\\Scripts\\\\pip-audit.exe --version
+
+                        Write-Host "[INFO] Verifying pytest..."
+                        .\\\\.ci-venv\\\\Scripts\\\\pytest.exe --version
+
+                        Write-Host "[PASS] Python CI environment ready."
+                    '''
+                }
+            }
+        }
+
         stage('Security Check') {
             steps {
                 dir('exam_portal') {
@@ -43,7 +82,7 @@ pipeline {
                         Write-Host "======================================"
                         Write-Host ""
 
-                        if (-not (Test-Path ".\\security-check.ps1")) {
+                        if (-not (Test-Path ".\\\\security-check.ps1")) {
                             Write-Host "[FAIL] security-check.ps1 not found."
                             exit 1
                         }
@@ -51,7 +90,7 @@ pipeline {
                         Write-Host "[INFO] Running security-check.ps1..."
                         Write-Host ""
 
-                        .\\security-check.ps1
+                        .\\\\security-check.ps1
 
                         if ($LASTEXITCODE -ne 0) {
                             Write-Host ""
