@@ -27,43 +27,54 @@ pipeline {
         }
 
         stage('Prepare Python CI Environment') {
-            steps {
-                dir('exam_portal') {
-                    echo '======================================'
-                    echo 'PREPARING PYTHON CI ENVIRONMENT'
-                    echo '======================================'
+    steps {
+        dir('exam_portal') {
+            echo '======================================'
+            echo 'PREPARING PYTHON CI ENVIRONMENT'
+            echo '======================================'
 
-                    powershell '''
-                        $ErrorActionPreference = "Stop"
+            powershell '''
+                $ErrorActionPreference = "Stop"
 
-                        Write-Host "[INFO] Checking Python..."
-                        python --version
+                $PythonExe = "C:\\Users\\CDAC\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
 
-                        if (-not (Test-Path ".\\\\.ci-venv\\\\Scripts\\\\python.exe")) {
-                            Write-Host "[INFO] Creating CI virtual environment..."
-                            python -m venv .ci-venv
-                        }
-                        else {
-                            Write-Host "[INFO] CI virtual environment already exists."
-                        }
+                Write-Host "[INFO] Checking Python..."
+                Write-Host "[INFO] Python path: $PythonExe"
 
-                        Write-Host "[INFO] Upgrading pip..."
-                        .\\\\.ci-venv\\\\Scripts\\\\python.exe -m pip install --upgrade pip
-
-                        Write-Host "[INFO] Installing CI security/test tools..."
-                        .\\\\.ci-venv\\\\Scripts\\\\python.exe -m pip install pip-audit pytest
-
-                        Write-Host "[INFO] Verifying pip-audit..."
-                        .\\\\.ci-venv\\\\Scripts\\\\pip-audit.exe --version
-
-                        Write-Host "[INFO] Verifying pytest..."
-                        .\\\\.ci-venv\\\\Scripts\\\\pytest.exe --version
-
-                        Write-Host "[PASS] Python CI environment ready."
-                    '''
+                if (-not (Test-Path $PythonExe)) {
+                    Write-Error "Python executable not found at $PythonExe"
+                    exit 1
                 }
-            }
+
+                & $PythonExe --version
+
+                if (-not (Test-Path ".\\.ci-venv\\Scripts\\python.exe")) {
+                    Write-Host "[INFO] Creating CI virtual environment..."
+                    & $PythonExe -m venv .ci-venv
+                }
+                else {
+                    Write-Host "[INFO] CI virtual environment already exists."
+                }
+
+                $CIPython = ".\\.ci-venv\\Scripts\\python.exe"
+
+                Write-Host "[INFO] Upgrading pip..."
+                & $CIPython -m pip install --upgrade pip
+
+                Write-Host "[INFO] Installing CI tools..."
+                & $CIPython -m pip install pip-audit pytest
+
+                Write-Host "[INFO] Verifying pip-audit..."
+                & ".\\.ci-venv\\Scripts\\pip-audit.exe" --version
+
+                Write-Host "[INFO] Verifying pytest..."
+                & ".\\.ci-venv\\Scripts\\pytest.exe" --version
+
+                Write-Host "[SUCCESS] Python CI environment ready."
+            '''
         }
+    }
+}
 
         stage('Security Check') {
             steps {
