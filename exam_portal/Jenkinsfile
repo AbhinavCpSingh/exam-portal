@@ -28,7 +28,7 @@ pipeline {
                     Write-Host "======================================"
                     Write-Host ""
 
-                    .\security-check.ps1
+                    & ".\security-check.ps1"
 
                     if ($LASTEXITCODE -ne 0) {
                         Write-Host ""
