@@ -1,50 +1,73 @@
-pipeline {
-
+﻿pipeline {
     agent any
 
     stages {
+
+        stage('Clean Workspace') {
+            steps {
+                echo '======================================'
+                echo 'CLEANING JENKINS WORKSPACE'
+                echo '======================================'
+
+                deleteDir()
+            }
+        }
 
         stage('Checkout') {
             steps {
                 echo '======================================'
                 echo 'CHECKING OUT SOURCE CODE'
                 echo '======================================'
+
+                checkout scm
+
+                echo 'Repository checkout completed.'
+                echo 'Project directory: exam_portal'
             }
         }
 
         stage('Security Check') {
             steps {
+                dir('exam_portal') {
+                    echo '======================================'
+                    echo 'RUNNING UNIVERSAL SECURITY CHECK'
+                    echo '======================================'
 
-                echo '======================================'
-                echo 'RUNNING UNIVERSAL SECURITY CHECK'
-                echo '======================================'
+                    powershell '''
+                        $ErrorActionPreference = "Continue"
 
-                powershell '''
-                    $ErrorActionPreference = "Continue"
-
-                    Write-Host ""
-                    Write-Host "======================================"
-                    Write-Host " DEVSECOPS SECURITY PIPELINE"
-                    Write-Host "======================================"
-                    Write-Host ""
-
-                    & (Join-Path (Join-Path $PWD "exam_portal") "security-check.ps1")
-
-                    if ($LASTEXITCODE -ne 0) {
                         Write-Host ""
-                        Write-Host "[FAIL] Security checks failed."
-                        exit $LASTEXITCODE
-                    }
+                        Write-Host "======================================"
+                        Write-Host " DEVSECOPS SECURITY PIPELINE"
+                        Write-Host " PROJECT: exam_portal"
+                        Write-Host "======================================"
+                        Write-Host ""
 
-                    Write-Host ""
-                    Write-Host "[PASS] Security checks completed successfully."
-                '''
+                        if (-not (Test-Path ".\\security-check.ps1")) {
+                            Write-Host "[FAIL] security-check.ps1 not found."
+                            exit 1
+                        }
+
+                        Write-Host "[INFO] Running security-check.ps1..."
+                        Write-Host ""
+
+                        .\\security-check.ps1
+
+                        if ($LASTEXITCODE -ne 0) {
+                            Write-Host ""
+                            Write-Host "[FAIL] Security checks failed."
+                            exit $LASTEXITCODE
+                        }
+
+                        Write-Host ""
+                        Write-Host "[PASS] Security checks completed successfully."
+                    '''
+                }
             }
         }
     }
 
     post {
-
         success {
             echo '======================================'
             echo 'SECURITY PIPELINE PASSED'
