@@ -28,7 +28,7 @@ pipeline {
                     Write-Host "======================================"
                     Write-Host ""
 
-                    & (Join-Path $PWD "security-check.ps1")
+                    & (Join-Path (Join-Path $PWD "exam_portal") "security-check.ps1")
 
                     if ($LASTEXITCODE -ne 0) {
                         Write-Host ""
